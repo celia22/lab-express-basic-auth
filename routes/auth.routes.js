@@ -1,3 +1,4 @@
+
 const { Router } = require('express');
 
 const router = new Router();
@@ -13,56 +14,60 @@ const User = require('../models/User.model');
 router.get('/signup', (req, res) => res.render('auth/signup'));
 
 router.post('/signup', (req, res, next) => {
-  const { username, email, password } = req.body;
+  const { username, password } = req.body;
 
   const hashedPassword = bcryptjs.hashSync(password);
-  console.log(`Password hash: ${hashedPassword}`);
-
+  
   bcryptjs
     .genSalt(saltRounds)
     .then(salt => bcryptjs.hash(password, salt))
     .then(hashedPassword => {
       return User.create({
         username,
-        email,
         passwordHash: hashedPassword,
       });
     })
-    .then(userFromDB => {
-      console.log('Newly created user is: ', userFromDB);
+    .then(user => {
+      console.log('Newly created user is: ', user);
       res.redirect('/userProfile');
     })
     .catch(error => next(error));
 });
-
-router.get('/userProfile', (req, res) => res.render('users/user-profile'));
 
 // LOGIN //
 
 router.get('/login', (req, res) => res.render('auth/login'));
 
 router.post('/login', (req, res, next) => {
-  const { email, password } = req.body;
+  console.log('SESSION =====> ', req.session);
+  const { username, password } = req.body;
 
-  if (email === '' || password === '') {
+  if (username === '' || password === '') {
     res.render('auth/login', {
       errorMessage: 'Please enter both, email and password to login.',
     });
     return;
   }
 
-  User.findOne({ email })
-    .then(user => {
-      if (!user) {
-        res.render('auth/login', { errorMessage: 'Email is not registered. Try with other email.' });
+  User.findOne({ username })
+    .then(validUser => {
+      if (!validUser) {
+        res.render('auth/login', { errorMessage: 'Username is not registered. Try with other username.' });
         return;
-      } else if (bcryptjs.compareSync(password, user.passwordHash)) {
-        res.render('users/user-profile', { user });
+      } else if (bcryptjs.compareSync(password, validUser.passwordHash)) {
+        req.session.currentUser = validUser;
+        res.redirect('/userProfile');
       } else {
         res.render('auth/login', { errorMessage: 'Incorrect password.' });
       }
     })
     .catch(error => next(error));
 });
+
+router.get('/userProfile', (req, res) => {
+  res.render('users/user-profile', { userInSession: req.session.currentUser });
+  console.log(currentUser);
+});
+
 
 module.exports = router;

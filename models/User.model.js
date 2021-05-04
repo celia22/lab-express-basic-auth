@@ -1,4 +1,5 @@
-const { Schema, model } = require('mongoose');
+const mongoose = require('mongoose');
+const { Schema, model } = mongoose;
 
 const userSchema = new Schema(
   {
@@ -7,13 +8,6 @@ const userSchema = new Schema(
       trim: true,
       required: [true, 'Username is required.'],
       unique: true,
-    },
-    email: {
-      type: String,
-      required: [true, 'Email is required.'],
-      unique: true,
-      lowercase: true,
-      trim: true,
     },
     passwordHash: {
       type: String,

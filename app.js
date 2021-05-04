@@ -11,6 +11,7 @@ const path = require('path');
 const app_name = require('./package.json').name;
 const debug = require('debug')(`${app_name}:${path.basename(__filename).split('.')[0]}`);
 
+
 const app = express();
 
 // require database configuration
@@ -33,8 +34,12 @@ app.locals.title = 'Express - Generated with IronGenerator';
 
 const index = require('./routes/index.routes');
 const authRouter = require('./routes/auth.routes');
+const privateRouter = require('./routes/private.routes');
 
 app.use('/', index);
 app.use('/', authRouter);
+app.use('/private', privateRouter);
+
+require('./configs/session.config')(app);
 
 module.exports = app;
