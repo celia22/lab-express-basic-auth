@@ -39,6 +39,7 @@ router.post('/signup', (req, res, next) => {
 router.get('/login', (req, res) => res.render('auth/login'));
 
 router.post('/login', (req, res, next) => {
+  console.log('SESSION =====> ', req.session);
   const { email, password } = req.body;
 
   if (email === '' || password === '') {
@@ -66,5 +67,6 @@ router.post('/login', (req, res, next) => {
 //   console.log(currentUser);
 // });
 
+router.get('/login', (req, res) => res.render('auth/login'));
 
 module.exports = router;

@@ -7,12 +7,9 @@ module.exports = app => {
       resave: true,
       saveUninitialized: false,
       cookie: {
-        secure: true,
-        path: '/',
+        sameSite: 'none',
         httpOnly: true,
-        hostOnly: true,
-        sameSite: false,
-        domain: 'domain.com',
+        maxAge: 60000,
       },
     }),
   );
