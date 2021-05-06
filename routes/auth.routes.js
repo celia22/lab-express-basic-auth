@@ -62,10 +62,10 @@ router.post('/login', (req, res, next) => {
     .catch(error => next(error));
 });
 
-// router.get('/userProfile', (req, res) => {
-//   res.render('users/user-profile', { userInSession: req.session.currentUser });
-//   console.log(currentUser);
-// });
+router.get('/userProfile', (req, res) => {
+  res.render('users/user-profile', { userInSession: req.session.currentUser });
+  console.log(currentUser);
+});
 
 router.get('/login', (req, res) => res.render('auth/login'));
 

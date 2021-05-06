@@ -15,7 +15,7 @@ const app = express();
 
 // require database configuration
 require('./configs/db.config');
-
+require('./configs/session.config')(app);
 
 // Middleware Setup
 app.use(logger('dev'));
@@ -37,7 +37,5 @@ const authRouter = require('./routes/auth.routes');
 
 app.use('/', index);
 app.use('/', authRouter);
-
-require('./configs/session.config')(app);
 
 module.exports = app;
